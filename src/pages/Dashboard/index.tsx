@@ -7,19 +7,12 @@ import ModalAddFood from '../../components/ModalAddFood';
 import ModalEditFood from '../../components/ModalEditFood';
 import { FoodsContainer } from './styles';
 import { toast } from 'react-toastify';
+import { FoodType } from '../../types';
 
-interface Food {
-  id: number;
-  image: string;
-  name: string;
-  description: string;
-  price: number;
-  available: boolean;
-};
 
 export default function Dashboard() {
-  const [foods, setDishes] = useState([] as Food[]);
-  const [editingFood, setEditingFood] = useState({} as Food);
+  const [foods, setDishes] = useState([] as FoodType[]);
+  const [editingFood, setEditingFood] = useState({} as FoodType);
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
@@ -27,13 +20,13 @@ export default function Dashboard() {
     loadDishes();
 
     async function loadDishes() {
-      const response = await api.get<Food[]>('/foods');
+      const response = await api.get<FoodType[]>('/foods');
 
       setDishes(response.data);
     }
   }, []);
 
-  const handleAddFood = async (food: Food) => {
+  const handleAddFood = async (food: FoodType) => {
     try {
       const response = await api.post('/foods', {
         ...food,
@@ -47,7 +40,7 @@ export default function Dashboard() {
     }
   }
 
-  const handleUpdateFood = async (food: Food) => {
+  const handleUpdateFood = async (food: FoodType) => {
     try {
       const foodUpdated = await api.put(
         `/foods/${editingFood.id}`,
@@ -75,7 +68,7 @@ export default function Dashboard() {
 
   const toggleEditModal = () => setEditModalOpen(!editModalOpen);
 
-  const handleEditFood = (food: Food) => {
+  const handleEditFood = (food: FoodType) => {
     setEditingFood(food);
     setEditModalOpen(true);
   }
@@ -85,12 +78,12 @@ export default function Dashboard() {
       <Header openModal={toggleModal} />
       <ModalAddFood
         isOpen={modalOpen}
-        setIsOpen={toggleModal}
+        toggleModal={toggleModal}
         handleAddFood={handleAddFood}
       />
       <ModalEditFood
         isOpen={editModalOpen}
-        setIsOpen={toggleEditModal}
+        toggleModal={toggleEditModal}
         editingFood={editingFood}
         handleUpdateFood={handleUpdateFood}
       />
